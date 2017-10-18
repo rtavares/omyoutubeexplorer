@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div style="margin-top:30px;" class="">
+        <h2><img width=100 src="http://openminds.pt/media/siteImages/braincolor.jpg" />Open Minds - Youtube Explorer</h2>
+    </div>
+    <div class="d-flex justify-content-around"> 
+        <div class="p-2"><span class="badge badge-success">Query: {{response.query}}</span></div>
+        <div class="p-2"><span class="badge badge-success">Total items: {{response.total_items}}</span></div>
+        <div class="p-2"> <span class="badge badge-success">Page items: {{response.page_items}}</span></div>
+        <div class="p-2"> 
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#videosList">  Show videos list
+            </button>
+        </div>
+    </div>
+     
+    <div>
+        <form class="form-inline my-2 my-lg-0" action="" method="post" name="query">
+            {{ form.hidden_tag() }}
+            <input name="query" class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+
+    </div>
+    <div class="alert alert-success" role="alert">
+        <div class="d-flex justify-content-around"> 
+            <div class="p-2">
+                <button type="button" class="btn btn-primary" onClick="update_video(-1)">Previous</button>
+            </div>
+            <div class="p-2">
+                <span class="badge badge-success">Current video: <span id='current_video'></span> </span>
+            </div>
+            <div class="p-2">
+                <button type="button" class="btn btn-primary" onClick="update_video(1)">Next</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 "></div>
+            <div class="col-lg-8 embed-responsive embed-responsive-16by9">
+                <iframe id='show_video' class="embed-responsive-item" src="">
+                </iframe>            
+            </div>
+            <div class="col-lg-2 "></div>
+        </div>
+    </div> <!-- End box -->
+</div> <!-- End container -->
+
+<!-- Videos list Modal -->
+<div class="modal fade bd-example-modal-lg" id="videosList" tabindex="-1" role="dialog" aria-labelledby="videosList" aria-hidden="true" >
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Result Videos List</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Channel</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="body_video_list">
+            </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- About it Modal -->
+<div class="modal fade bd-example-modal-lg" id="about_it" tabindex="-1" role="dialog" aria-labelledby="about-it" aria-hidden="true" >
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">About it - What is Youtube Explorer?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-block">
+            <h4 class="card-title">About it - What is it?</h4>
+            <h6 class="card-subtitle mb-2 text-muted">Open Minds - Youtube Explorer</h6>
+            <p class="card-text">OM Youtube Explorer is an experience to play with:
+            <ul>
+                <li>Pyython 3</li>
+                <li>Flask 0.14</li>
+                <li>Bootstrap 4</li>
+                <li>Docker</li>
+                <li>AWS</li>
+                <li>And of course API's, in this case the YouTube API</li>
+            </ul>
+            </p>
+            <p class="card-text">
+            Also the idea is to explore microframeworks by oposition of more usual and well know Django. 
+            </p>
+          </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-block">
+                <p class="card-text">
+                    This is a work in progress. </br>
+                    So, if you are curious about it, come often that will be enhancements.
+                </p>
+                <p>
+                Want to drop a word? Cool! Send someting to <strong>rtavares(at)gmail.com </strong>.
+                </p>
+            </div>
+        </div>
+
+        <div class="card text-center">
+            <div class="card-block">
+                <h4 class="card-title">Open Minds</h4>
+                <h6 class="card-subtitle mb-2 text-muted"><i>It's good to have one!</i></h6>
+            </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+    
+{% block local_js %}
+    <script>
+        var current_video = 0;
+        var result_list = "";
+        var video_list_size = 0;
+        $(document).ready(function()
+            {
+                var list2 = '{{response.result_list|tojson}}';
+
+                list2 = list2.substring(1, )
+                list2 = list2.substring(0, list2.length-1)
+
+                result_list = JSON.parse(list2);
+                video_list_size = Object.keys(result_list).length;
+
+                // Initialize video window on start
+                update_video(-1);
+                build_video_list();
+
+            });
+
+    </script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='local.js') }}"></script>
+{% endblock %}
+
