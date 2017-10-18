@@ -14,3 +14,6 @@ About it - What is it?
                     So, if you are curious about it, come often that will be enhancements.    
 
                 Want to drop a word? Cool! Send someting to rtavares(at)gmail.com     
+
+See it running here: [ https://goo.gl/fZwhwK ](https://goo.gl/fZwhwK)
+Shortner to: [http://omyoutubeexplorer.us-east-2.elasticbeanstalk.com/ ](http://omyoutubeexplorer.us-east-2.elasticbeanstalk.com/)
